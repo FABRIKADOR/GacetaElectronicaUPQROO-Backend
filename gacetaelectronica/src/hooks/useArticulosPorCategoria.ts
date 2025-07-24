@@ -24,9 +24,18 @@ export type ArticleCardProps = {
   summary: string;
   author: string;
   date: string;
-  tag: string;
+  etiquetas: string[]; // Cambia 'tag' por 'etiquetas'
   image: string;
 };
+
+/**
+ * Extrae el ID de Google Drive y genera la URL de previsualización.
+ */
+function getDriveImageUrl(driveUrl: string): string | null {
+  const regex = /\/d\/([a-zA-Z0-9_-]+)/;
+  const match = driveUrl.match(regex);
+  return match ? `https://drive.google.com/uc?export=preview&id=${match[1]}` : null;
+}
 
 /**
  * Mapa que relaciona el IdCategoria de la API con la clave interna usada en la UI.
@@ -38,6 +47,14 @@ const CATEGORY_MAP: Record<number, string> = {
   3: "logros",
   4: "social",
   5: "culturales",
+};
+
+const CATEGORY_NAME_MAP: Record<string, string> = {
+  cienciatecnologia: "ciencia",
+  humanidades: "humanidades",
+  logros: "logros",
+  socialpolitica: "social",
+  culturaldeportiva: "culturales",
 };
 
 /**
@@ -59,28 +76,44 @@ export default function useArticulosPorCategoria() {
     async function fetchArticles() {
       try {
         const res = await fetch("/api/articulos?limit=100&offset=0");
-        const data: ArticuloAPI[] = await res.json();
+        const data: any[] = await res.json();
 
+        // Solo artículos publicados
+        const publicados = data.filter((a) => a.status === "published");
         const grouped: Record<string, ArticleCardProps[]> = {};
 
-        data.forEach((articulo) => {
-          // Usar el nombre de la categoría en minúsculas como clave
-          const key = articulo.category.toLowerCase();
-          if (!key) return;
+        await Promise.all(
+          publicados.map(async (articulo) => {
+            // Obtener etiquetas
+            const etiquetasRes = await fetch(`/api/articuloEtiqueta?articuloId=${articulo.id}`);
+            const etiquetas = etiquetasRes.ok ? await etiquetasRes.json() : [];
 
-          const article: ArticleCardProps = {
-            id: articulo.id,
-            title: articulo.title,
-            summary: articulo.summary || "No hay resumen disponible",
-            author: articulo.author || "Redacción J-UP",
-            date: articulo.createdAt,
-            tag: articulo.status === "published" ? "Publicado" : "Borrador",
-            image: "/placeholder.svg?height=200&width=300" ,
-          };
+            // Obtener recursos para la imagen
+            const resRecursos = await fetch(`/api/recursos?articuloId=${articulo.id}`);
+            const recursos = resRecursos.ok ? await resRecursos.json() : [];
+            const imagenUrl = Array.isArray(recursos) && recursos.length > 0
+              ? getDriveImageUrl(recursos[0].Ruta || recursos[0].ruta || recursos[0].url || "")
+              : null;
 
-          if (!grouped[key]) grouped[key] = [];
-          grouped[key].push(article);
-        });
+            // Mapeo de categoría
+            const rawKey = articulo.category.toLowerCase();
+            const key = CATEGORY_NAME_MAP[rawKey];
+            if (!key) return;
+
+            const article: ArticleCardProps = {
+              id: articulo.id,
+              title: articulo.title,
+              summary: articulo.resumen || articulo.summary || "No hay resumen disponible",
+              author: articulo.author || "Redacción J-UP",
+              date: articulo.createdAt,
+              etiquetas: etiquetas.map((e: any) => e.Nombre),
+              image: imagenUrl || "/placeholder.svg?height=200&width=300",
+            };
+
+            if (!grouped[key]) grouped[key] = [];
+            grouped[key].push(article);
+          })
+        );
 
         setArticlesByCategory(grouped);
       } catch (err) {

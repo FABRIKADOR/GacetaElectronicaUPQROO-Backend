@@ -20,32 +20,44 @@ const tagColors = {
 export default function ArticleCard({ article }: { article: any }) {
   return (
     <Link href={`/publica/articulo/${article.id}`} passHref>
-    <Card className="h-full flex flex-col justify-between hover:shadow-lg transition-shadow bg-neutral-50 border-neutral-200 hover:border-orange-500 cursor-pointer">
+      <Card className="h-full flex flex-col justify-between hover:shadow-lg transition-shadow bg-neutral-50 border-neutral-200 hover:border-orange-500 cursor-pointer">
         <div className="relative">
-            <Image
+          <Image
             src={article.image || "/placeholder.svg"}
             alt={article.title}
             width={300}
             height={200}
             className="w-full h-48 object-cover rounded-t-lg"
-            />
+          />
         </div>
 
-        {/* Cabecera de la tarjeta con la etiqueta, fecha, título y autor */}        
+        {/* Cabecera de la tarjeta con las etiquetas, fecha, título y autor */}
         <CardHeader>
-            <div className="flex justify-between items-start mb-2">
-                <Badge className={`${tagColors[article.tag as keyof typeof tagColors]} border`}>
-                    {article.tag}
-                </Badge>
-                <span className="text-sm text-neutral-500">{article.date}</span>
+          <div className="flex flex-wrap gap-2 mb-2 items-center justify-between">
+            {/* Etiquetas */}
+            <div className="flex flex-wrap gap-2">
+              {Array.isArray(article.etiquetas) && article.etiquetas.length > 0 ? (
+                article.etiquetas.map((etiqueta: string, idx: number) => (
+                  <Badge
+                    key={idx}
+                    className={`${tagColors[etiqueta as keyof typeof tagColors] || "bg-gray-100 text-gray-800 border-gray-200"} border`}
+                  >
+                    {etiqueta}
+                  </Badge>
+                ))
+              ) : (
+                <Badge className="bg-gray-100 text-gray-800 border-gray-200 border">Sin etiqueta</Badge>
+              )}
             </div>
-            <CardTitle className="text-lg text-accent-900">{article.title}</CardTitle>
-            <CardDescription className="text-sm text-neutral-600">Por {article.author}</CardDescription>
+            <span className="text-sm text-neutral-500">{article.date}</span>
+          </div>
+          <CardTitle className="text-lg text-accent-900">{article.title}</CardTitle>
+          <CardDescription className="text-sm text-neutral-600">Por {article.author}</CardDescription>
         </CardHeader>
-          <CardContent className="mt-auto">
-            <p className="text-neutral-700 line-clamp-3">{article.summary}</p>
-          </CardContent>
-        </Card>
-      </Link>
+        <CardContent className="mt-auto">
+          <p className="text-neutral-700 line-clamp-3">{article.summary}</p>
+        </CardContent>
+      </Card>
+    </Link>
   )
 }
