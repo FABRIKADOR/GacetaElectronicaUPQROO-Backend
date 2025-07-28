@@ -14,7 +14,6 @@ import {
 import { LogOut, LayoutDashboard } from "lucide-react"
 
 export default function PrivateHeader() {
-
   const { data: session } = useSession()
 
   const user = session?.user

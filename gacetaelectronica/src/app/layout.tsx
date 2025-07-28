@@ -9,8 +9,8 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Gaceta UPQROO",
-  description: "Gaceta UPQROO - scientia, tripalium et virtus.",
+  title: "Mi app",
+  description: "Descripción de prueba",
 };
 
 export default async function RootLayout({

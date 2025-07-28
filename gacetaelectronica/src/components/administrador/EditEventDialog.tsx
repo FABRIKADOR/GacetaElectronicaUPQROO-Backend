@@ -44,52 +44,52 @@ export function EditEventDialog({ open, onOpenChange, event, onSave }: Props) {
             <Label htmlFor="title">Título</Label>
             <Input
               id="title"
-              value={form.Nombre}
-              onChange={(e) => handleChange('Nombre', e.target.value)}
+              value={form.title}
+              onChange={(e) => handleChange('title', e.target.value)}
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="Fecha">Fecha</Label>
+              <Label htmlFor="date">Fecha</Label>
               <Input
-                id="Fecha"
+                id="date"
                 type="date"
-                value={form.Fecha}
-                onChange={(e) => handleChange('Fecha', e.target.value)}
+                value={form.date}
+                onChange={(e) => handleChange('date', e.target.value)}
               />
             </div>
             <div>
-              <Label htmlFor="Hora">Hora</Label>
+              <Label htmlFor="time">Hora</Label>
               <Input
-                id="Hora"
+                id="time"
                 type="time"
-                value={form.Hora}
-                onChange={(e) => handleChange('Hora', e.target.value)}
+                value={form.time}
+                onChange={(e) => handleChange('time', e.target.value)}
               />
             </div>
           </div>
           <div>
-            <Label htmlFor="Lugar">Lugar</Label>
+            <Label htmlFor="location">Lugar</Label>
             <Input
-              id="Lugar"
-              value={form.Lugar}
-              onChange={(e) => handleChange('Lugar', e.target.value)}
+              id="location"
+              value={form.location}
+              onChange={(e) => handleChange('location', e.target.value)}
             />
           </div>
           <div>
-            <Label htmlFor="DesCorta">Descripción corta</Label>
+            <Label htmlFor="shortDescription">Descripción corta</Label>
             <Textarea
-              id="DesCorta"
-              value={form.DesCorta}
-              onChange={(e) => handleChange('DesCorta', e.target.value)}
+              id="shortDescription"
+              value={form.shortDescription}
+              onChange={(e) => handleChange('shortDescription', e.target.value)}
             />
           </div>
           <div>
-            <Label htmlFor="DesLarga">Descripción larga</Label>
+            <Label htmlFor="longDescription">Descripción larga</Label>
             <Textarea
-              id="DesLarga"
-              value={form.DesLarga ?? ''}
-              onChange={(e) => handleChange('DesLarga', e.target.value)}
+              id="longDescription"
+              value={form.longDescription ?? ''}
+              onChange={(e) => handleChange('longDescription', e.target.value)}
               rows={4}
             />
           </div>
