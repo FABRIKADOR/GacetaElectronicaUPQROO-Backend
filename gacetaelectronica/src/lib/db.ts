@@ -18,7 +18,7 @@ const dbConfig = {
   password: 'gacetaUP2025',
   database: 'gaceta_bd',
   waitForConnections: true,
-  connectionLimit: 100,
+  connectionLimit: 20,
   queueLimit: 0
 };
 

@@ -1,23 +1,14 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { SupervisorContainer } from "./components/container";
-import { useSessionUser } from "@/hooks/useSessionUser";
+import { useInitializeUser } from "@/hooks/useInitializeUser";
+
+export interface SupervisorPageProps {}
 
 export default function SupervisorPage() {
-  const router = useRouter();
-  const { userInfo, loading, status } = useSessionUser();
-
-  useEffect(() => {
-    if (!loading && status === "unauthenticated") {
-      router.push("/publica/login");
-    }
-
-    if (!loading && userInfo?.role !== "Revisor") {
-      router.push("/forbidden");
-    }
-  }, [loading, userInfo?.role, status]);
+  // TODO: Este hook es solo para hacer dinámico el componente durante desarrollo.
+  // El rol se debe obtener desde el backend mediante autenticación real.
+  useInitializeUser("Supervisor");
 
   return <SupervisorContainer />;
 }
